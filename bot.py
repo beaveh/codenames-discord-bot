@@ -27,16 +27,19 @@ async def _8ball(ctx, *, question): # *, question allows us to take several argu
 @client.command()
 async def load(ctx, extension):
     client.load_extension(f'cogs.{extension}')
+    await ctx.send(extension + 'loaded')
 
 @client.command()
 async def unload(ctx, extension):
     client.unload_extension(f'cogs.{extension}')
+    await ctx.send(extension + 'unloaded')
 
 @client.command()
-async def unload(ctx, extension):
+async def reload(ctx, extension):
     client.unload_extension(f'cogs.{extension}')
     client.load_extension(f'cogs.{extension}')
-    
+    await ctx.send(extension + 'reloaded')
+
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
         client.load_extension(f'cogs.{filename[:-3]}')
