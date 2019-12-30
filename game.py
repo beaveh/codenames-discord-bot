@@ -25,4 +25,7 @@ class Word(object):
         self.revealed = True
         self.text = emojis[self.team] + ' ' + self.text
 
+    def __str__(self):
+        return self.text
+
 emojis = {'red': ':red_circle:', 'blue': 'blue_circle', 'assassin': ':black_circle:', 'bystander': ':white_circle:' }
