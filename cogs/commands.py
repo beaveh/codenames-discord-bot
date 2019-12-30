@@ -14,7 +14,7 @@ class Commands(commands.Cog):
     #Commands
     @commands.command()
     async def ping(self, ctx):
-        await ctx.send(':red_circle:')
+        await ctx.send(':red_circle: \n hi')
 
     @commands.command()
     async def kick(self, ctx, member : discord.Member, *, reason=None):
