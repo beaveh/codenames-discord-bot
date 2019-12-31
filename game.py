@@ -3,11 +3,12 @@ import random
 class Game(object):
     """Object that manages game state"""
 
+    channels = []
     turn = None
 
-    def __init__(self, server):
+    def __init__(self, channel):
         self.players = {}
-        self.server = server
+        self.channel = channel
 
     """Add player to a team"""
     def add(self, player, team): #figure out what player is (discord id, string, etc.)
@@ -17,12 +18,12 @@ class Game(object):
             self.players[player] = team
             return True
 
-    def end_game(self):
+    def end_game(self): #must remove the channel from channels list
         pass
 
 class Board(object):
     def __init__(self, teams=['red', 'blue']):
-        
+
         num_red = 8
         num_blue = 8
         starting_team = random.choice(teams)
@@ -41,7 +42,7 @@ class Word(object):
     revealed = False
     team = 'bystander'
 
-    def __init__(self, text, team):
+    def __init__(self, text, team='bystander'):
         self.text = text
         self.team = team
 

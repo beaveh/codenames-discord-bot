@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from .game import Game
 
 class Commands(commands.Cog):
 
@@ -33,6 +34,13 @@ class Commands(commands.Cog):
             if (user.name, user.discriminator) == (member_name, member_discriminator):
                 await ctx.guild.unban(user)
                 await ctx.send(f'Unbanned {user.name}#{user.discriminator}')
+
+    #Codenames commands below this line
+    @commands.command()
+    async def codenames(self, ctx):
+        if ctx.channel in Game.channels:
+            ctx.send(f'There is already a game in progress! (Use {command_prefix}end_game to terminate this game)')
+        else:
 
 def setup(client):
     client.add_cog(Commands(client))
