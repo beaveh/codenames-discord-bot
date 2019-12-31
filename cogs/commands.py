@@ -42,9 +42,10 @@ class Commands(commands.Cog):
     #Codenames commands below this line
     @commands.command()
     async def codenames(self, ctx):
-        if ctx.channel in Game.channels:
+        if ctx.channel in Game.active_games:
             ctx.send(f'There is already a game in progress! (Use {command_prefix}end_game to terminate this game)')
         else:
+            Game.active_games[ctx.channel] = Game()
 
 def setup(client):
     client.add_cog(Commands(client))

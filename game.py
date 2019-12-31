@@ -4,13 +4,14 @@ class Game(object):
     """Object that manages game state"""
 
     turn = None
+    active_games = {} #keys are channels, values are game instances
 
     def __init__(self, server):
         self.players = {}
         self.channel = channel
 
     """Add player to a team"""
-    def add(self, player, team): #figure out what player is (discord id, string, etc.)
+    def add(self, player, team): #figure out what player is
         if player in self.players:
             return False
         else:
@@ -26,7 +27,6 @@ class Board(object):
             self.words = []
             count = 0
             lines = []
-
             for line in file:
                 count += 1
             while len(lines) < 25:
