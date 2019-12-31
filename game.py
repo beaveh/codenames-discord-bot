@@ -31,10 +31,15 @@ class Board(object):
             num_red += 1
         else:
             num_blue += 1
-        for _ in range(num_red):
-
-
-
+        colors = random.sample(range(0, 25), 18)
+        reds = colors[:num_red]
+        blues = colors[num_red:17]
+        black = colors[17]
+        for red in reds:
+            self.words[red].team = 'red'
+        for blue in blues:
+            self.words[blue].team = 'blue'
+        self.words[black].team = 'black'
 
 class Word(object):
     """Represents a word on the board"""

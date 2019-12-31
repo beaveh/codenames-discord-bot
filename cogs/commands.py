@@ -18,6 +18,10 @@ class Commands(commands.Cog):
         await ctx.send(':red_circle: \n hi')
 
     @commands.command()
+    async def pong(self, ctx):
+        await ctx.send(':blue_circle: \n bye :wave:')
+
+    @commands.command()
     async def kick(self, ctx, member : discord.Member, *, reason=None):
         await member.kick(reason=reason)
 
