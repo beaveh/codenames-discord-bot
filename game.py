@@ -7,7 +7,7 @@ class Game(object):
 
     def __init__(self, server):
         self.players = {}
-        self.server = server
+        self.channel = channel
 
     """Add player to a team"""
     def add(self, player, team): #figure out what player is (discord id, string, etc.)
