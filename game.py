@@ -22,7 +22,22 @@ class Game(object):
 
 class Board(object):
     def __init__(self, teams=['red', 'blue']):
-        
+        with open('words.txt', 'r') as file:
+            self.words = []
+            count = 0
+            lines = []
+
+            for line in file:
+                count += 1
+            while len(lines) < 25:
+                a = random.randrange(0, count)
+                if a in lines:
+                    pass
+                else:
+                    lines.append(a)
+            for num in lines:
+                self.words.append(Word(file.readline(num)))
+
         num_red = 8
         num_blue = 8
         starting_team = random.choice(teams)
@@ -30,7 +45,16 @@ class Board(object):
             num_red += 1
         else:
             num_blue += 1
-        for _ in range(num_red):
+        colors = random.sample(range(0, 25), 18)
+        reds = colors[:num_red]
+        blues = colors[num_red:17]
+        black = colors[17]
+        for red in reds:
+            self.words[red].team = 'red'
+        for blue in blues:
+            self.words[blue].team = 'blue'
+        self.words[black].team = 'black'
+
 
 
 
