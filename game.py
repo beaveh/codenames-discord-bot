@@ -3,12 +3,11 @@ import random
 class Game(object):
     """Object that manages game state"""
 
-    channels = []
     turn = None
 
-    def __init__(self, channel):
+    def __init__(self, server):
         self.players = {}
-        self.channel = channel
+        self.server = server
 
     """Add player to a team"""
     def add(self, player, team): #figure out what player is (discord id, string, etc.)
@@ -18,11 +17,26 @@ class Game(object):
             self.players[player] = team
             return True
 
-    def end_game(self): #must remove the channel from channels list
+    def end_game(self):
         pass
 
 class Board(object):
     def __init__(self, teams=['red', 'blue']):
+        with open('words.txt', 'r') as file:
+            self.words = []
+            count = 0
+            lines = []
+
+            for line in file:
+                count += 1
+            while len(lines) < 25:
+                a = random.randrange(0, count)
+                if a in lines:
+                    pass
+                else:
+                    lines.append(a)
+            for num in lines:
+                self.words.append(Word(file.readline(num)))
 
         num_red = 8
         num_blue = 8
@@ -41,13 +55,17 @@ class Board(object):
             self.words[blue].team = 'blue'
         self.words[black].team = 'black'
 
+
+
+
+
 class Word(object):
     """Represents a word on the board"""
 
     revealed = False
     team = 'bystander'
 
-    def __init__(self, text, team='bystander'):
+    def __init__(self, text, team):
         self.text = text
         self.team = team
 
