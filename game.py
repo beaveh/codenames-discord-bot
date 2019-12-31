@@ -55,10 +55,6 @@ class Board(object):
             self.words[blue].team = 'blue'
         self.words[black].team = 'black'
 
-
-
-
-
 class Word(object):
     """Represents a word on the board"""
 
