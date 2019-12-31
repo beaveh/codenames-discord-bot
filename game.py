@@ -1,8 +1,13 @@
+import random
+
 class Game(object):
     """Object that manages game state"""
 
-    def __init__(self):
+    turn = None
+
+    def __init__(self, server):
         self.players = {}
+        self.server = server
 
     """Add player to a team"""
     def add(self, player, team): #figure out what player is (discord id, string, etc.)
@@ -12,10 +17,29 @@ class Game(object):
             self.players[player] = team
             return True
 
+    def end_game(self):
+        pass
+
+class Board(object):
+    def __init__(self, teams=['red', 'blue']):
+        
+        num_red = 8
+        num_blue = 8
+        starting_team = random.choice(teams)
+        if starting_team == 'red':
+            num_red += 1
+        else:
+            num_blue += 1
+        for _ in range(num_red):
+
+
+
+
 class Word(object):
     """Represents a word on the board"""
 
     revealed = False
+    team = 'bystander'
 
     def __init__(self, text, team):
         self.text = text
@@ -28,4 +52,4 @@ class Word(object):
     def __str__(self):
         return self.text
 
-emojis = {'red': ':red_circle:', 'blue': 'blue_circle', 'assassin': ':black_circle:', 'bystander': ':white_circle:' }
+emojis = {'red': ':red_circle:', 'blue': ':blue_circle:', 'assassin': ':black_circle:', 'bystander': ':white_circle:' }
