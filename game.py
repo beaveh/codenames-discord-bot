@@ -5,11 +5,11 @@ class Game(object):
 
     active_games = {} #keys are channels, values are game instances
 
-    def __init__(self, server):
+    def __init__(self, gamemaster):
         self.players = {}
-        self.channel = channel
         self.turn = None
         self.started = False
+        self.gamemaster = gamemaster
 
     """Add player to a team"""
     def add(self, player, team): #figure out what player is
