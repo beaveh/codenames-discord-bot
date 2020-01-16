@@ -3,12 +3,12 @@ import random
 class Game(object):
     """Object that manages game state"""
 
-    turn = None
     active_games = {} #keys are channels, values are game instances
 
     def __init__(self, server):
         self.players = {}
         self.channel = channel
+        self.turn = None
 
     """Add player to a team"""
     def add(self, player, team): #figure out what player is
