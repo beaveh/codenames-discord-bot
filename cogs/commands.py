@@ -43,9 +43,23 @@ class Commands(commands.Cog):
     @commands.command()
     async def codenames(self, ctx):
         if ctx.channel in Game.active_games:
-            ctx.send(f'There is already a game in progress! (Use {command_prefix}end_game to terminate this game)')
+            await ctx.send(f'There is already a game in progress! (Use {command_prefix}end_game to terminate this game)')
         else:
             Game.active_games[ctx.channel] = Game()
+
+    @commands.command()
+    async def join(self, ctx, team): #team may need to be casted to str
+        check_game(ctx)
+        if team != 'red' or team != 'blue':
+            await ctx.send('Invalid team selected.')
+        else:
+            Game.players[ctx.author] = team
+            await ctx.send(f'{ctx.author} has joined the {team} team.')
+
+    """Checks for an active game in the current channel"""
+    async def check_game(ctx):
+        if not Game.active_games.get(ctx.channel):
+            await ctx.send(f'There is not an active game in the channel! Use {comand_prefix}codenames to start a new game.')
 
 def setup(client):
     client.add_cog(Commands(client))
