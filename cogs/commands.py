@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
-from .game import Game
+from ..game import Game
+from ..exceptions import InvalidTeamError, SameTeamError
 
 class Commands(commands.Cog):
 
@@ -50,11 +51,17 @@ class Commands(commands.Cog):
     @commands.command()
     async def join(self, ctx, team): #team may need to be casted to str
         check_game(ctx)
-        if team != 'red' or team != 'blue':
-            await ctx.send('Invalid team selected.')
-        else:
-            get_game(ctx).players[ctx.author] = team
+        try:
+            get_game(ctx).add(ctx.author, team)
             await ctx.send(f'{ctx.author} has joined the {team} team.')
+        except InvalidTeamError:
+            await ctx.send('Invalid team selected.')
+        except SameTeamError:
+            await ctx.send('You have already joined this team!')
+
+    @commands.command()
+    async def spymaster(self, ctx):
+        check_game()
 
     @commands.command()
     async def end_game(self, ctx):
@@ -63,14 +70,16 @@ class Commands(commands.Cog):
         else:
             await ctx.send('There is no active game currently in this channel.')
 
-    """Checks for an active game in the current channel"""
-    async def check_game(ctx):
-        if not Game.active_games.get(ctx.channel):
-            await ctx.send(f'There is not an active game in the channel! Use {comand_prefix}codenames to start a new game.')
 
-    """Returns the active game within the ctx channel"""
-    def get_game(ctx):
-        return Game.active_games.get(ctx.channel)
+
+"""Checks for an active game in the current channel"""
+async def check_game(ctx):
+    if not Game.active_games.get(ctx.channel):
+        await ctx.send(f'There is not an active game in the channel! Use {comand_prefix}codenames to start a new game.')
+
+"""Returns the active game within the ctx channel"""
+def get_game(ctx):
+    return Game.active_games.get(ctx.channel)
 
 def setup(client):
     client.add_cog(Commands(client))

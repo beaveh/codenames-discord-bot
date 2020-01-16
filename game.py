@@ -1,7 +1,7 @@
 import random
 
 class Game(object):
-    """Object that manages game state"""
+    """Object that manages and contains information about the game state"""
 
     active_games = {} #keys are channels, values are game instances
 
@@ -9,17 +9,16 @@ class Game(object):
         self.players = {}
         self.channel = channel
         self.turn = None
+        self.started = False
 
     """Add player to a team"""
     def add(self, player, team): #figure out what player is
-        if player in self.players:
-            return False
+        if team != 'red' or team != 'blue':
+            raise TeamError
+        if self.players.get(player) == team:
+            raise SameTeamError
         else:
             self.players[player] = team
-            return True
-
-    def end_game(self):
-        pass
 
 class Board(object):
     def __init__(self, teams=['red', 'blue']):
