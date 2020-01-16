@@ -72,8 +72,8 @@ class Commands(commands.Cog):
             if get_game(ctx).gamemaster != ctx.author:
                 await ctx.send(f'Only the gamemaster ({get_game(ctx).gamemaster}) may start the game.')
             else:
-                get_game(ctx).started = True
-                #Finish this funciton
+                message = get_game(ctx).start()
+                await ctx.send(message)
         except ActiveGameError:
             await ctx.send(f'There is not an active game in the channel! Use {comand_prefix}codenames to start a new game.')
 
@@ -81,7 +81,7 @@ class Commands(commands.Cog):
     async def end_game(self, ctx):
         try:
             check_game(ctx)
-            Game.active_games.pop(ctx.channel, None):
+            end_game(ctx.channel)
             await ctx.send('Active game successfully ended.')
         except ActiveGameError:
             await ctx.send(f'There is not an active game in the channel! Use {comand_prefix}codenames to start a new game.')

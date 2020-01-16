@@ -4,21 +4,53 @@ class Game(object):
     """Object that manages and contains information about the game state"""
 
     active_games = {} #keys are channels, values are game instances
+    started = False
 
     def __init__(self, gamemaster):
         self.players = {}
         self.turn = None
-        self.started = False
         self.gamemaster = gamemaster
+        self.board = Board()
+        self.red_spymaster = None
+        self.blue_spymaster = None
 
     """Add player to a team"""
     def add(self, player, team): #figure out what player is
         if team != 'red' or team != 'blue':
-            raise TeamError
+            raise InvalidTeamError
         if self.players.get(player) == team:
             raise SameTeamError
         else:
             self.players[player] = team
+
+    def start(self):
+        teams = Counter(self.players.values())
+        if teams['red'] < 2 or teams['blue'] < 2:
+            return 'There are not enough players to start a game!'
+        elif not self.red_spymaster:
+            return 'Please select a Spymaster for the red team.'
+        elif not self.blue_spymaster:
+            return 'Please select a Spymaster for the blue team.'
+        elif self.started:
+            return 'The game has already started!'
+        else:
+            self.started = True
+
+    def make_spymaster(self, player): #account for case where player has not yet joined a team
+        team = self.players.get(player)
+        if team == 'red':
+            if self.red_spymaster:
+                return 'There is already a Spymaster for the Red team.'
+            else:
+                return f'{player} is the Spymaster for the Red team'
+        elif team == 'blue':
+            if self.blue_spymaster:
+                return 'There is already a Spymaster for the Blue team.'
+            else:
+                return f'{player} is the Spymaster for the Blue team.'
+
+    def end_game(self, channel):
+        Game.active_games.pop(ctx.channel, None)
 
 class Board(object):
     def __init__(self, teams=['red', 'blue']):
