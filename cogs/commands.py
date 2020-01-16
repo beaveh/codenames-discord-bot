@@ -53,13 +53,24 @@ class Commands(commands.Cog):
         if team != 'red' or team != 'blue':
             await ctx.send('Invalid team selected.')
         else:
-            Game.players[ctx.author] = team
+            get_game(ctx).players[ctx.author] = team
             await ctx.send(f'{ctx.author} has joined the {team} team.')
+
+    @commands.command()
+    async def end_game(self, ctx):
+        if Game.active_games.pop(ctx.channel, None):
+            await ctx.send('Active game successfully ended.')
+        else:
+            await ctx.send('There is no active game currently in this channel.')
 
     """Checks for an active game in the current channel"""
     async def check_game(ctx):
         if not Game.active_games.get(ctx.channel):
             await ctx.send(f'There is not an active game in the channel! Use {comand_prefix}codenames to start a new game.')
+
+    """Returns the active game within the ctx channel"""
+    def get_game(ctx):
+        return Game.active_games.get(ctx.channel)
 
 def setup(client):
     client.add_cog(Commands(client))
