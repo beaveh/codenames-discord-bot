@@ -1,5 +1,6 @@
 import random
 from collections import Counter
+from .commands import command_prefix
 
 class Game(object):
     """Object that manages and contains information about the game state"""
@@ -14,9 +15,12 @@ class Game(object):
         self.board = Board()
         self.red_spymaster = None
         self.blue_spymaster = None
+        self.red_clues = []
+        self.blue_clues = []
+        self.clue_given = False
 
     """Add player to a team"""
-    def add(self, player, team): #figure out what player is
+    def add(self, player, team):
         if team != 'red' and team != 'blue':
             return 'Invalid team selected.'
         if self.players.get(player) == team:
@@ -60,11 +64,34 @@ class Game(object):
         else:
             return 'You have not joined a team yet!'
 
+    def give_clue(self, player, clue, num):
+        if not self.started:
+            return f'The game has not started yet. Use {command_prefix}start to start the game.'
+        elif self.clue_given:
+            return f'The spymaster has already given a clue for this round.'
+        if self.turn == 'red':
+            if self.red_spymaster != player:
+                return f'Only the Red Spymaster ({self.red_spymaster}) may give a clue at this time.'
+            else:
+                self.clue_given = True
+                self.red_clues.append(f'{clue}: {num}')
+                return f'The clue is {clue}: {num}'
+        elif self.turn == 'blue':
+            if self.blue_spymaster != player:
+                return f'Only the Blue Spymaster ({self.blue_spymaster}) may give a clue at this time.'
+            else:
+                self.clue_given = True
+                self.blue_clues.append(f'{clue}: {num}')
+                return f'The clue is {clue}: {num}'
+
+    def get_board(self):
+        return str(self.board)
+        
     def end_game(self, channel):
         Game.active_games.pop(channel, None)
 
 class Board(object):
-    """Represents a 5x5 grid of letters"""
+    """Represents a 5x5 grid of words"""
 
     starting_team = None
 
@@ -100,6 +127,9 @@ class Board(object):
         for blue in blues:
             self.words[blue].team = 'blue'
         self.words[black].team = 'black'
+
+    def __str__(self):
+        pass
 
 class Word(object):
     """Represents a word on the board"""
