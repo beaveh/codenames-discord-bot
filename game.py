@@ -17,11 +17,14 @@ class Game(object):
     """Add player to a team"""
     def add(self, player, team): #figure out what player is
         if team != 'red' or team != 'blue':
-            raise InvalidTeamError
+            return 'Invalid team selected.'
         if self.players.get(player) == team:
-            raise SameTeamError
+            return 'You have already joined this team!'
+        if self.started:
+            return 'The game has already started. You may not join a team at this time.'
         else:
             self.players[player] = team
+            return f'{player} has joined the {team} team.'
 
     def start(self):
         teams = Counter(self.players.values())
@@ -42,17 +45,22 @@ class Game(object):
             if self.red_spymaster:
                 return 'There is already a Spymaster for the Red team.'
             else:
+                self.red_spymaster = player
                 return f'{player} is the Spymaster for the Red team'
         elif team == 'blue':
             if self.blue_spymaster:
                 return 'There is already a Spymaster for the Blue team.'
             else:
+                self.blue_spymaster = player
                 return f'{player} is the Spymaster for the Blue team.'
 
     def end_game(self, channel):
         Game.active_games.pop(ctx.channel, None)
 
 class Board(object):
+
+    starting_team = None
+
     def __init__(self, teams=['red', 'blue']):
         with open('words.txt', 'r') as file:
             self.words = []
@@ -71,8 +79,8 @@ class Board(object):
 
         num_red = 8
         num_blue = 8
-        starting_team = random.choice(teams)
-        if starting_team == 'red':
+        self.starting_team = random.choice(teams)
+        if self.starting_team == 'red':
             num_red += 1
         else:
             num_blue += 1
@@ -103,4 +111,4 @@ class Word(object):
     def __str__(self):
         return self.text
 
-emojis = {'red': ':red_circle:', 'blue': ':blue_circle:', 'assassin': ':black_circle:', 'bystander': ':white_circle:' }
+emojis = {'red': ':red_circle:', 'blue': ':blue_circle:', 'assassin': ':black_circle:', 'bystander': ':white_circle:'}
