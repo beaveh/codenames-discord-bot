@@ -41,6 +41,7 @@ class Game(object):
             return 'The game has already started!'
         else:
             self.started = True
+            self.turn = self.board.starting_team
 
     def make_spymaster(self, player): #account for case where player has not yet joined a team
         team = self.players.get(player)

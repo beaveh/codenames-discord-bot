@@ -49,7 +49,7 @@ class Commands(commands.Cog):
             await ctx.send(f'There is already a game in progress! (Use {command_prefix}end_game to terminate this game)')
         else:
             Game.active_games[ctx.channel] = Game(ctx.author)
-            await ctx.send('Game started.')
+            await ctx.send(f'The game has been configured. Use {command_prefix}join [blue/red] to join a team.')
 
     @commands.command()
     async def join(self, ctx, team): #team may need to be casted to str
