@@ -1,0 +1,2 @@
+class ActiveGameError(Exception):
+    pass
