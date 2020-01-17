@@ -52,14 +52,10 @@ class Commands(commands.Cog):
     async def join(self, ctx, team): #team may need to be casted to str
         try:
             check_game(ctx)
-            get_game(ctx).add(ctx.author, team)
-            await ctx.send(f'{ctx.author} has joined the {team} team.')
+            message = get_game(ctx).add(ctx.author, team)
+            await ctx.send(message)
         except ActiveGameError:
-            await ctx.send(f'There is not an active game in the channel! Use {comand_prefix}codenames to start a new game.')
-        except InvalidTeamError:
-            await ctx.send('Invalid team selected.')
-        except SameTeamError:
-            await ctx.send('You have already joined this team!')
+            await ctx.send(f'There is not an active game in the channel! Use {command_prefix}codenames to start a new game.')
 
     @commands.command()
     async def spymaster(self, ctx):
@@ -75,7 +71,7 @@ class Commands(commands.Cog):
                 message = get_game(ctx).start()
                 await ctx.send(message)
         except ActiveGameError:
-            await ctx.send(f'There is not an active game in the channel! Use {comand_prefix}codenames to start a new game.')
+            await ctx.send(f'There is not an active game in the channel! Use {command_prefix}codenames to start a new game.')
 
     @commands.command()
     async def end_game(self, ctx):
@@ -84,11 +80,11 @@ class Commands(commands.Cog):
             end_game(ctx.channel)
             await ctx.send('Active game successfully ended.')
         except ActiveGameError:
-            await ctx.send(f'There is not an active game in the channel! Use {comand_prefix}codenames to start a new game.')
+            await ctx.send(f'There is not an active game in the channel! Use {command_prefix}codenames to start a new game.')
 
 
 """Checks for an active game in the current channel"""
-async def check_game(ctx):
+def check_game(ctx):
     if not Game.active_games.get(ctx.channel):
         raise ActiveGameError
 
