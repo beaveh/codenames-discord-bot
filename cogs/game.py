@@ -43,7 +43,7 @@ class Game(object):
             self.started = True
             self.turn = self.board.starting_team
 
-    def make_spymaster(self, player): #account for case where player has not yet joined a team
+    def make_spymaster(self, player):
         team = self.players.get(player)
         if team == 'red':
             if self.red_spymaster:
@@ -70,6 +70,7 @@ class Board(object):
 
     def __init__(self, teams=['red', 'blue']):
         self.words = []
+        self.starting_team = random.choice(teams)
         with open('words.txt', 'r') as file:
             count = 0
             lines = []
@@ -86,7 +87,6 @@ class Board(object):
 
         num_red = 8
         num_blue = 8
-        self.starting_team = random.choice(teams)
         if self.starting_team == 'red':
             num_red += 1
         else:
