@@ -6,10 +6,10 @@ class Game(object):
     """Object that manages and contains information about the game state"""
 
     active_games = {} #keys are channels, values are game instances
-    started = False
 
     def __init__(self, gamemaster):
         self.players = {}
+        self.started = False
         self.turn = None
         self.gamemaster = gamemaster
         self.board = Board()
@@ -18,6 +18,7 @@ class Game(object):
         self.red_clues = []
         self.blue_clues = []
         self.clue_given = False
+        self.guesses_left = 0
 
     """Add player to a team"""
     def add(self, player, team):
@@ -69,7 +70,7 @@ class Game(object):
             return f'The game has not started yet. Use {command_prefix}start to start the game.'
         elif self.clue_given:
             return f'The spymaster has already given a clue for this round.'
-        if self.turn == 'red':
+        elif self.turn == 'red':
             if self.red_spymaster != player:
                 return f'Only the Red Spymaster ({self.red_spymaster}) may give a clue at this time.'
             else:
@@ -86,7 +87,16 @@ class Game(object):
 
     def get_board(self):
         return str(self.board)
-        
+
+    def get_status(self):
+        return f'{self.get_board()} \n
+                Red Spymaster: {self.red_spymaster} \n
+                Blue Spymaster: {self.blue_spymaster} \n
+                Red Clues: {self.red_clues} \n
+                Blue Clues: {self.blue_clues} \n
+                Current Turn: {self.turn} \n
+                Guesses left: {self.guesses_left}'
+
     def end_game(self, channel):
         Game.active_games.pop(channel, None)
 

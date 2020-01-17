@@ -85,6 +85,20 @@ class Commands(commands.Cog):
             if get_game(ctx).clue_given:
                 await ctx.message.delete()
             message = get_game(ctx).give_clue(ctx.author, clue, number)
+            await ctx.send(message)
+        except ActiveGameError:
+            await ctx.send(f'There is not an active game in the channel! Use {command_prefix}codenames to start a new game.')
+
+    @commands.command()
+    async def guess(self, ctx, word):
+        pass
+
+    @commands.command()
+    async def status(self, ctx):
+        try:
+            check_game(ctx)
+            message = get_game(ctx).get_status()
+            await ctx.send(message)
         except ActiveGameError:
             await ctx.send(f'There is not an active game in the channel! Use {command_prefix}codenames to start a new game.')
 
