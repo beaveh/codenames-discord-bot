@@ -1,7 +1,9 @@
-import discord
+import discord, random, os
 from discord.ext import commands
-from ..game import Game
-from ..exceptions import InvalidTeamError, SameTeamError
+from .game import Game
+from .exceptions import ActiveGameError
+
+command_prefix = '$'
 
 class Commands(commands.Cog):
 
@@ -16,7 +18,7 @@ class Commands(commands.Cog):
     #Commands
     @commands.command()
     async def ping(self, ctx):
-        await ctx.send(':red_circle: \n hi')
+        await ctx.send('pong')
 
     @commands.command()
     async def pong(self, ctx):
@@ -47,6 +49,7 @@ class Commands(commands.Cog):
             await ctx.send(f'There is already a game in progress! (Use {command_prefix}end_game to terminate this game)')
         else:
             Game.active_games[ctx.channel] = Game(ctx.author)
+            await ctx.send('Game started.')
 
     @commands.command()
     async def join(self, ctx, team): #team may need to be casted to str
@@ -59,17 +62,19 @@ class Commands(commands.Cog):
 
     @commands.command()
     async def spymaster(self, ctx):
-        pass
+        try:
+            check_game(ctx)
+            message = get_game(ctx).make_spymaster(ctx.author)
+            await ctx.send(message)
+        except ActiveGameError:
+            await ctx.send(f'There is not an active game in the channel! Use {command_prefix}codenames to start a new game.')
 
     @commands.command()
     async def start(self, ctx):
         try:
             check_game(ctx)
-            if get_game(ctx).gamemaster != ctx.author:
-                await ctx.send(f'Only the gamemaster ({get_game(ctx).gamemaster}) may start the game.')
-            else:
-                message = get_game(ctx).start()
-                await ctx.send(message)
+            message = get_game(ctx).start(ctx.author)
+            await ctx.send(message)
         except ActiveGameError:
             await ctx.send(f'There is not an active game in the channel! Use {command_prefix}codenames to start a new game.')
 
@@ -77,7 +82,7 @@ class Commands(commands.Cog):
     async def end_game(self, ctx):
         try:
             check_game(ctx)
-            end_game(ctx.channel)
+            get_game(ctx).end_game(ctx.channel)
             await ctx.send('Active game successfully ended.')
         except ActiveGameError:
             await ctx.send(f'There is not an active game in the channel! Use {command_prefix}codenames to start a new game.')

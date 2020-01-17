@@ -1,4 +1,5 @@
 import random
+from collections import Counter
 
 class Game(object):
     """Object that manages and contains information about the game state"""
@@ -16,7 +17,7 @@ class Game(object):
 
     """Add player to a team"""
     def add(self, player, team): #figure out what player is
-        if team != 'red' or team != 'blue':
+        if team != 'red' and team != 'blue':
             return 'Invalid team selected.'
         if self.players.get(player) == team:
             return 'You have already joined this team!'
@@ -26,9 +27,11 @@ class Game(object):
             self.players[player] = team
             return f'{player} has joined the {team} team.'
 
-    def start(self):
+    def start(self, user):
         teams = Counter(self.players.values())
-        if teams['red'] < 2 or teams['blue'] < 2:
+        if user != self.gamemaster:
+            return f'Only the gamemaster ({self.gamemaster}) may start the game.'
+        elif teams['red'] < 2 or teams['blue'] < 2:
             return 'There are not enough players to start a game!'
         elif not self.red_spymaster:
             return 'Please select a Spymaster for the red team.'
@@ -53,17 +56,20 @@ class Game(object):
             else:
                 self.blue_spymaster = player
                 return f'{player} is the Spymaster for the Blue team.'
+        else:
+            return 'You have not joined a team yet!'
 
     def end_game(self, channel):
-        Game.active_games.pop(ctx.channel, None)
+        Game.active_games.pop(channel, None)
 
 class Board(object):
+    """Represents a 5x5 grid of letters"""
 
     starting_team = None
 
     def __init__(self, teams=['red', 'blue']):
+        self.words = []
         with open('words.txt', 'r') as file:
-            self.words = []
             count = 0
             lines = []
             for line in file:
@@ -75,7 +81,7 @@ class Board(object):
                 else:
                     lines.append(a)
             for num in lines:
-                self.words.append(Word(file.readline(num)))
+                self.words.append(Word(file.readline(num), None))
 
         num_red = 8
         num_blue = 8
