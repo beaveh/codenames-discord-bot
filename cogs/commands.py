@@ -91,6 +91,15 @@ class Commands(commands.Cog):
 
     @commands.command()
     async def guess(self, ctx, word):
+        try:
+            check_game(ctx)
+            message = get_game(ctx).guess(ctx.author, word)
+            await ctx.send(message)
+        except ActiveGameError:
+            await ctx.send(f'There is not an active game in the channel! Use {command_prefix}codenames to start a new game.')
+
+    @commands.command()
+    async def end_turn(self, ctx):
         pass
 
     @commands.command()
@@ -110,8 +119,8 @@ class Commands(commands.Cog):
     async def end_game(self, ctx):
         try:
             check_game(ctx)
-            get_game(ctx).end_game(ctx.channel)
-            await ctx.send('Active game successfully ended.')
+            message = get_game(ctx).end_game(ctx.channel)
+            await ctx.send(message)
         except ActiveGameError:
             await ctx.send(f'There is not an active game in the channel! Use {command_prefix}codenames to start a new game.')
 
