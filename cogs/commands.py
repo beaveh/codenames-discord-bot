@@ -82,7 +82,7 @@ class Commands(commands.Cog):
     async def give_clue(self, ctx, clue, number):
         try:
             check_game(ctx)
-            if get_game(ctx).clue_given:
+            if get_game(ctx).clue_given or get_game(ctx).check_word(clue):
                 await ctx.message.delete()
             message = get_game(ctx).give_clue(ctx.author, clue, number)
             await ctx.send(message)
@@ -91,6 +91,10 @@ class Commands(commands.Cog):
 
     @commands.command()
     async def guess(self, ctx, word):
+        pass
+
+    @commands.command()
+    async def rules(self, ctx):
         pass
 
     @commands.command()

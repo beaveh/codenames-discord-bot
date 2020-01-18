@@ -70,6 +70,8 @@ class Game(object):
             return f'The game has not started yet. Use {command_prefix}start to start the game.'
         elif self.clue_given:
             return f'The spymaster has already given a clue for this round.'
+        elif self.check_word(clue):
+            return f'Your clue cannot be one of the words on the board!'
         elif self.turn == 'red':
             if self.red_spymaster != player:
                 return f'Only the Red Spymaster ({self.red_spymaster}) may give a clue at this time.'
@@ -84,6 +86,11 @@ class Game(object):
                 self.clue_given = True
                 self.blue_clues.append(f'{clue}: {num}')
                 return f'The clue is {clue}: {num}'
+
+    """Returns whether a given word is one of the words (unrevealed) on the board"""
+    def check_word(self, word):
+        words = [word.text for word in self.board.words]
+        return word in words
 
     def get_board(self):
         return str(self.board)
