@@ -1,4 +1,5 @@
 import random
+import discord
 from collections import Counter
 
 command_prefix = '$'
@@ -28,6 +29,8 @@ class Game(object):
             return 'Invalid team selected.'
         elif self.players.get(player) == team:
             return 'You have already joined this team!'
+        elif self.started and (player == self.red_spymaster or player == self.blue_spymaster):
+            return 'The spymaster cannot change teams after the game has started.'
         # consider removing the ability to join after the game has started
         # elif self.started:
         #     return 'The game has already started. You may not join a team at this time.'
@@ -125,7 +128,8 @@ class Game(object):
                     message += f' {guess} is a(n) {emojis[word.team]}{word.team} word.'
                     if word.team == 'assassin':
                         self.check_winner(self.other(current_team))
-                    self.check_winner()
+                    else:
+                        self.check_winner()
                     message += f'\n{self.get_board()}'
                     if word.team != self.players[player]:
                         self.guesses_left = 0
