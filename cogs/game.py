@@ -138,7 +138,7 @@ class Game(object):
                         self.guesses_left = 0
                         message += f"\nThe {current_team} team's turn is over."
                     else:
-                        message += f'\nThe {self.turn} team has {self.guesses_left} guesses left.'
+                        message += f'\nThe {self.turn} team has {self.guesses_left} guess(es) left.'
             if not self.guesses_left:
                 self.turn = self.other(self.turn)
                 self.clue_given = False
