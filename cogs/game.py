@@ -128,7 +128,7 @@ class Game(object):
             for word in self.board.words:
                 if word.text == guess:
                     word.reveal()
-                    message += f' {guess} is a(n) {emojis[word.team]}{word.team} word.'
+                    message += f'\n{guess} is a(n) {emojis[word.team]}{word.team} word.'
                     if word.team == 'Assassin':
                         self.check_winner(self.other(current_team))
                     else:
@@ -136,9 +136,9 @@ class Game(object):
                     message += f'\n{self.get_board()}'
                     if word.team != self.players[player]:
                         self.guesses_left = 0
-                        message = message + f" \nThe {current_team} team's turn is over."
+                        message += f"\nThe {current_team} team's turn is over."
                     else:
-                        message = message + f' \nThe {self.turn} team has {self.guesses_left} guesses left.'
+                        message += f'\nThe {self.turn} team has {self.guesses_left} guesses left.'
             if not self.guesses_left:
                 self.turn = self.other(self.turn)
                 self.clue_given = False
