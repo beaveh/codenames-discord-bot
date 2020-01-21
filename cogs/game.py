@@ -128,7 +128,7 @@ class Game(object):
             for word in self.board.words:
                 if word.text == guess:
                     word.reveal()
-                    message += f'\n{guess} is a(n) {emojis[word.team]}{word.team} word.'
+                    message += f'\n{guess} is a(n) {emojis[word.team]} {word.team} word.'
                     if word.team == 'Assassin':
                         self.check_winner(self.other(current_team))
                     else:
