@@ -1,5 +1,6 @@
 import random
 import discord
+import linecache
 from collections import Counter
 
 command_prefix = '$'
@@ -25,7 +26,8 @@ class Game(object):
 
     """Add player to a team"""
     def add(self, player, team):
-        if team != 'red' and team != 'blue':
+        team = team.capitalize()
+        if team != 'Red' and team != 'Blue':
             return 'Invalid team selected.'
         elif self.players.get(player) == team:
             return 'You have already joined this team!'
@@ -48,37 +50,38 @@ class Game(object):
             return 'The game has already started!'
         elif user != self.gamemaster:
             return f'Only the gamemaster ({self.gamemaster}) may start the game.'
-        elif teams['red'] < 2 or teams['blue'] < 2:
-            return 'There are not enough players to start a game!'
-        elif not self.red_spymaster:
-            return 'Please select a Spymaster for the red team.'
-        elif not self.blue_spymaster:
-            return 'Please select a Spymaster for the blue team.'
+        # Lines below are commented for testing purposes
+        # elif teams['Red'] < 2 or teams['Blue'] < 2:
+        #     return 'There are not enough players to start a game!'
+        # elif not self.red_spymaster:
+        #     return 'Please select a Spymaster for the Red team.'
+        # elif not self.blue_spymaster:
+        #     return 'Please select a Spymaster for the Blue team.'
         elif self.started:
             return 'The game has already started!'
         else:
             self.started = True
             self.turn = self.board.starting_team
-            return f'{self.get_board} \n{self.turn} team goes first.'
+            return f'{self.get_board()} \n{self.turn} team goes first.'
 
     def make_spymaster(self, player):
         team = self.players.get(player)
         if self.started:
             return 'The game has already started. You may not assign Spymasters at this time.'
-        elif team == 'red':
+        elif team == 'Red':
             if self.red_spymaster:
                 return f'There is already a Spymaster for the Red team ({self.red_spymaster}).'
             else:
                 self.red_spymaster = player
                 return f'{player} is the Spymaster for the Red team'
-        elif team == 'blue':
+        elif team == 'Blue':
             if self.blue_spymaster:
                 return f'There is already a Spymaster for the Blue team ({self.blue_spymaster}).'
             else:
                 self.blue_spymaster = player
                 return f'{player} is the Spymaster for the Blue team.'
         else:
-            return f'You have not joined a team yet! Use {command_prefix}join [red/blue] before using this command.'
+            return f'You have not joined a team yet! Use {command_prefix}join [Red/Blue] before using this command.'
 
     def give_clue(self, player, clue, num):
         if not self.started:
@@ -87,18 +90,18 @@ class Game(object):
             return f'The spymaster has already given a clue for this round.'
         elif self.check_word(clue):
             return f'Your clue cannot be one of the words on the board!'
-        elif self.turn == 'red':
+        elif self.turn == 'Red':
             if self.red_spymaster != player:
                 return f'Only the Red Spymaster ({self.red_spymaster}) may give a clue at this time.'
             else:
                 self.clue_given = True
-                if num == 0 or num == 'infinity':
+                if num == 0:
                     self.guesses_left = float('inf')
                 else:
                     self.guesses_left = num + 1
                 self.red_clues.append(f'{clue}: {num}')
                 return f'The clue is {clue}: {num}'
-        elif self.turn == 'blue':
+        elif self.turn == 'Blue':
             if self.blue_spymaster != player:
                 return f'Only the Blue Spymaster ({self.blue_spymaster}) may give a clue at this time.'
             else:
@@ -126,7 +129,7 @@ class Game(object):
                 if word.text == guess:
                     word.reveal()
                     message += f' {guess} is a(n) {emojis[word.team]}{word.team} word.'
-                    if word.team == 'assassin':
+                    if word.team == 'Assassin':
                         self.check_winner(self.other(current_team))
                     else:
                         self.check_winner()
@@ -136,10 +139,11 @@ class Game(object):
                         message = message + f" \nThe {current_team} team's turn is over."
                     else:
                         message = message + f' \nThe {self.turn} team has {self.guesses_left} guesses left.'
-            message += f'\nThe {current_team} team has {self.guesses_left} guesses left.'
             if not self.guesses_left:
                 self.turn = self.other(self.turn)
+                self.clue_given = False
                 message += f"\nIt is now the {self.turn} team's turn to play."
+            return message
 
     def end_turn(self, player):
         if not self.started:
@@ -158,10 +162,10 @@ class Game(object):
 
     """Returns the opposing team"""
     def other(self, team):
-        if team == 'red':
-            return 'blue'
+        if team == 'Red':
+            return 'Blue'
         else:
-            return 'red'
+            return 'Red'
 
     """Returns whether a given word is one of the words (unrevealed) on the board"""
     def check_word(self, word):
@@ -175,16 +179,16 @@ class Game(object):
         blues = self.board.num_blue
         for word in self.board.words:
             if word.revealed:
-                if word.team = 'red':
+                if word.team == 'Red':
                     reds -= 1
-                elif word.team = 'blue':
+                elif word.team == 'Blue':
                     blues -= 1
         if reds == 0:
             Game.active_games.pop(self.channel, None)
-            return self.get_board + '\nThe red team wins!'
+            return self.get_board + '\nThe Red team wins!'
         elif blues == 0:
             Game.active_games.pop(self.channel, None)
-            return self.get_board + '\nThe blue team wins!'
+            return self.get_board + '\nThe Blue team wins!'
 
     def list_words(self):
         pass
@@ -211,23 +215,18 @@ class Board(object):
 
     starting_team = None
 
-    def __init__(self, teams=['red', 'blue']):
+    def __init__(self, teams=['Red', 'Blue']):
         self.words = []
         self.starting_team = random.choice(teams)
         with open('words.txt', 'r') as file:
-            count = 0
-            lines = []
-            for line in file:
-                count += 1
-            while len(lines) < 25:
-                a = random.randrange(0, count)
-                if a not in lines:
-                    lines.append(a)
-            for num in lines:
-                self.words.append(Word(file.readline(num), None))
+            lines = list(file)
+            indices = random.sample(range(len(lines)), 25)
+            for i, word in enumerate(lines):
+                if i in indices:
+                    self.words.append(Word(word.strip(), None))
         self.num_red = 8
         self.num_blue = 8
-        if self.starting_team == 'red':
+        if self.starting_team == 'Red':
             self.num_red += 1
         else:
             self.num_blue += 1
@@ -236,10 +235,10 @@ class Board(object):
         blues = colors[self.num_red:17]
         black = colors[17]
         for red in reds:
-            self.words[red].team = 'red'
+            self.words[red].team = 'Red'
         for blue in blues:
-            self.words[blue].team = 'blue'
-        self.words[black].team = 'black'
+            self.words[blue].team = 'Blue'
+        self.words[black].team = 'Assassin'
 
     def __str__(self):
         pass
@@ -248,7 +247,7 @@ class Word(object):
     """Represents a word on the board"""
 
     revealed = False
-    team = 'bystander'
+    team = 'Bystander'
 
     def __init__(self, text, team):
         self.text = text
@@ -261,4 +260,4 @@ class Word(object):
     def __str__(self):
         return self.text
 
-emojis = {'red': ':red_circle:', 'blue': ':blue_circle:', 'assassin': ':black_circle:', 'bystander': ':white_circle:'}
+emojis = {'Red': ':red_circle:', 'Blue': ':blue_circle:', 'Assassin': ':black_circle:', 'Bystander': ':white_circle:'}

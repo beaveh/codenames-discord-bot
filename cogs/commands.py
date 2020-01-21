@@ -13,7 +13,7 @@ class Commands(commands.Cog):
     #Events
     @commands.Cog.listener()
     async def on_ready(self):
-        print('Bot is online')
+        print('Codenames Bot is online')
 
     #Commands
     @commands.command()
@@ -49,7 +49,7 @@ class Commands(commands.Cog):
             await ctx.send(f'There is already a game in progress! (Use {command_prefix}end_game to terminate this game)')
         else:
             Game.active_games[ctx.channel] = Game(ctx.author, ctx.channel)
-            await ctx.send(f'The game has been configured. Use {command_prefix}join [blue/red] to join a team.')
+            await ctx.send(f'The game has been configured. Use {command_prefix}join [Red/Blue] to join a team.')
 
     @commands.command()
     async def join(self, ctx, team): #team may need to be casted to str
@@ -84,10 +84,12 @@ class Commands(commands.Cog):
             check_game(ctx)
             if get_game(ctx).clue_given or get_game(ctx).check_word(clue):
                 await ctx.message.delete()
-            message = get_game(ctx).give_clue(ctx.author, clue, number)
+            message = get_game(ctx).give_clue(ctx.author, clue, int(number))
             await ctx.send(message)
         except ActiveGameError:
             await ctx.send(f'There is not an active game in the channel! Use {command_prefix}codenames to start a new game.')
+        except ValueError:
+            await ctx.send('You must give the number as an integer.')
 
     @commands.command()
     async def guess(self, ctx, word):
