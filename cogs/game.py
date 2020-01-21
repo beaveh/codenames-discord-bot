@@ -241,7 +241,20 @@ class Board(object):
         self.words[black].team = 'Assassin'
 
     def __str__(self):
-        pass
+        count = 0
+        string_list = []
+        for word in self.words:
+            count += 1
+            if count % 5 == 0:
+                string_list.append(word.text + "| \n")
+            elif count % 5 == 1:
+                string_list.append("|" + word.text + "|")
+            else:
+                string_list.append(word.text +"|")
+        string = "".join(string_list)
+        return string
+
+
 
 class Word(object):
     """Represents a word on the board"""
