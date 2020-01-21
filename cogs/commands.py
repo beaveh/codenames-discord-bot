@@ -48,7 +48,7 @@ class Commands(commands.Cog):
         if ctx.channel in Game.active_games:
             await ctx.send(f'There is already a game in progress! (Use {command_prefix}end_game to terminate this game)')
         else:
-            Game.active_games[ctx.channel] = Game(ctx.author)
+            Game.active_games[ctx.channel] = Game(ctx.author, ctx.channel)
             await ctx.send(f'The game has been configured. Use {command_prefix}join [blue/red] to join a team.')
 
     @commands.command()
@@ -70,7 +70,7 @@ class Commands(commands.Cog):
             await ctx.send(f'There is not an active game in the channel! Use {command_prefix}codenames to start a new game.')
 
     @commands.command()
-    async def start(self, ctx):
+    async def start(self, ctx): # need to send words to spymasters
         try:
             check_game(ctx)
             message = get_game(ctx).start(ctx.author)

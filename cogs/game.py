@@ -8,8 +8,9 @@ class Game(object):
 
     active_games = {} #keys are channels, values are game instances
 
-    def __init__(self, gamemaster):
+    def __init__(self, gamemaster, channel):
         self.players = {}
+        self.channel = channel
         self.started = False
         self.turn = None
         self.gamemaster = gamemaster
@@ -20,7 +21,6 @@ class Game(object):
         self.blue_clues = []
         self.clue_given = False
         self.guesses_left = 0
-        self.winner = None
 
     """Add player to a team"""
     def add(self, player, team):
@@ -89,7 +89,10 @@ class Game(object):
                 return f'Only the Red Spymaster ({self.red_spymaster}) may give a clue at this time.'
             else:
                 self.clue_given = True
-                self.guesses_left = num + 1
+                if num == 0 or num == 'infinity':
+                    self.guesses_left = float('inf')
+                else:
+                    self.guesses_left = num + 1
                 self.red_clues.append(f'{clue}: {num}')
                 return f'The clue is {clue}: {num}'
         elif self.turn == 'blue':
@@ -113,30 +116,74 @@ class Game(object):
         elif not self.check_word(guess):
             return 'Guess an unrevealed word on the board.'
         else:
+            current_team = self.turn
             message = f'{player} has guessed {guess}!'
             self.guesses_left -= 1
             for word in self.board.words:
                 if word.text == guess:
                     word.reveal()
-                    message = message + f' {guess} is a(n) {word.team} word.'
+                    message += f' {guess} is a(n) {emojis[word.team]}{word.team} word.'
+                    if word.team == 'assassin':
+                        self.check_winner(self.other(current_team))
+                    self.check_winner()
+                    message += f'\n{self.get_board()}'
                     if word.team != self.players[player]:
                         self.guesses_left = 0
-                        self.turn = self.other(self.turn)
-                        message = message + f" The {self.turn} team's turn is over."
+                        message = message + f" \nThe {current_team} team's turn is over."
                     else:
-                        message = message + f' The {self.turn} team has {self.guesses_left} guesses left.' #figure out how to code end game/ win conditions
+                        message = message + f' \nThe {self.turn} team has {self.guesses_left} guesses left.'
+            message += f'\nThe {current_team} team has {self.guesses_left} guesses left.'
+            if not self.guesses_left:
+                self.turn = self.other(self.turn)
+                message += f"\nIt is now the {self.turn} team's turn to play."
+
+    def end_turn(self, player):
+        if not self.started:
+            return f'The game has not started yet. Use {command_prefix}start to start the game.'
+        elif not self.players.get(player):
+            return 'You cannot use this command since you have not yet joined a team.'
+        elif self.players.get(player) != self.turn:
+            return f"It is not your team's turn to guess."
+        elif not self.clue_given:
+            return f'Wait for a clue to be given before ending your turn.'
+        else:
+            current_team = self.turn
+            self.turn = self.other(self.turn)
+            self.clue_given = False
+            return f"The {current_team} has ended their turn. It is now the {self.turn} team's turn."
 
     """Returns the opposing team"""
     def other(self, team):
-        if team == 'Red':
-            return 'Blue'
+        if team == 'red':
+            return 'blue'
         else:
-            return 'Red'
+            return 'red'
 
     """Returns whether a given word is one of the words (unrevealed) on the board"""
     def check_word(self, word):
         words = [word.text for word in self.board.words]
         return word in words
+
+    def check_winner(self, winner=None):
+        if winner:
+            return self.get_board + f'\nThe {winner} team wins!'
+        reds = self.board.num_red
+        blues = self.board.num_blue
+        for word in self.board.words:
+            if word.revealed:
+                if word.team = 'red':
+                    reds -= 1
+                elif word.team = 'blue':
+                    blues -= 1
+        if reds == 0:
+            Game.active_games.pop(self.channel, None)
+            return self.get_board + '\nThe red team wins!'
+        elif blues == 0:
+            Game.active_games.pop(self.channel, None)
+            return self.get_board + '\nThe blue team wins!'
+
+    def list_words(self):
+        pass
 
     def get_board(self):
         #return str(self.board)
@@ -153,10 +200,7 @@ class Game(object):
 
     def end_game(self, channel):
         Game.active_games.pop(channel, None)
-        if self.winner:
-            return f'The {self.winner} team wins!'
-        else:
-            return 'Active game successfully ended.'
+        return 'Active game successfully ended.'
 
 class Board(object):
     """Represents a 5x5 grid of words"""
@@ -173,13 +217,10 @@ class Board(object):
                 count += 1
             while len(lines) < 25:
                 a = random.randrange(0, count)
-                if a in lines:
-                    pass
-                else:
+                if a not in lines:
                     lines.append(a)
             for num in lines:
                 self.words.append(Word(file.readline(num), None))
-
         self.num_red = 8
         self.num_blue = 8
         if self.starting_team == 'red':
