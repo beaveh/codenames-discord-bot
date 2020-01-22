@@ -70,16 +70,16 @@ class Game(object):
             return 'The game has already started. You may not assign Spymasters at this time.'
         elif team == 'Red':
             if self.red_spymaster:
-                return f'There is already a Spymaster for the {emojis['Red']}Red team ({self.red_spymaster}).'
+                return f'There is already a Spymaster for the {emojis["Red"]}Red team ({self.red_spymaster}).'
             else:
                 self.red_spymaster = player
-                return f'{player} is the Spymaster for the {emojis['Red']}Red team'
+                return f'{player} is the Spymaster for the {emojis["Red"]}Red team'
         elif team == 'Blue':
             if self.blue_spymaster:
-                return f'There is already a Spymaster for the {emojis['Blue']}Blue team ({self.blue_spymaster}).'
+                return f'There is already a Spymaster for the {emojis["Blue"]}Blue team ({self.blue_spymaster}).'
             else:
                 self.blue_spymaster = player
-                return f'{player} is the Spymaster for the {emojis['Blue']}Blue team.'
+                return f'{player} is the Spymaster for the {emojis["Blue"]}Blue team.'
         else:
             return f'You have not joined a team yet! Use {command_prefix}join [Red/Blue] before using this command.'
 
@@ -92,7 +92,7 @@ class Game(object):
             return f'Your clue cannot be one of the words on the board!'
         elif self.turn == 'Red':
             if self.red_spymaster != player:
-                return f'Only the {emojis['Red']}Red Spymaster ({self.red_spymaster}) may give a clue at this time.'
+                return f'Only the {emojis["Red"]}Red Spymaster ({self.red_spymaster}) may give a clue at this time.'
             else:
                 self.clue_given = True
                 if num == 0:
@@ -103,7 +103,7 @@ class Game(object):
                 return f'The clue is {clue}: {num}'
         elif self.turn == 'Blue':
             if self.blue_spymaster != player:
-                return f'Only the {emojis['Blue']}Blue Spymaster ({self.blue_spymaster}) may give a clue at this time.'
+                return f'Only the {emojis["Blue"]}Blue Spymaster ({self.blue_spymaster}) may give a clue at this time.'
             else:
                 self.clue_given = True
                 self.guesses_left = num + 1
@@ -174,7 +174,7 @@ class Game(object):
 
     def check_winner(self, winner=None):
         if winner:
-            return self.get_board + f'\nThe {winner} team wins!'
+            return self.get_board + f'\nThe {emojis[winner]} {winner} team wins!'
         reds = self.board.num_red
         blues = self.board.num_blue
         for word in self.board.words:
@@ -185,10 +185,10 @@ class Game(object):
                     blues -= 1
         if reds == 0:
             Game.active_games.pop(self.channel, None)
-            return self.get_board + '\nThe Red team wins!'
+            return self.get_board + f'\nThe {emojis["Red"]} Red team wins!'
         elif blues == 0:
             Game.active_games.pop(self.channel, None)
-            return self.get_board + '\nThe Blue team wins!'
+            return self.get_board + f'\nThe {emojis["Blue"]} Blue team wins!'
 
     def list_words(self):
         pass
