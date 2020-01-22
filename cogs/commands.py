@@ -73,8 +73,11 @@ class Commands(commands.Cog):
     async def start(self, ctx): # need to send words to spymasters
         try:
             check_game(ctx)
-            message = get_game(ctx).start(ctx.author)
+            current_game = get_game(ctx)
+            message = current_game.start(ctx.author)
             await ctx.send(message)
+            await current_game.red_spymaster.send(current_game.list_words())
+            await current_game.blue_spymaster.send(current_game.list_words())
         except ActiveGameError:
             await ctx.send(f'There is not an active game in the channel! Use {command_prefix}codenames to start a new game.')
 
@@ -82,7 +85,8 @@ class Commands(commands.Cog):
     async def give_clue(self, ctx, clue, number):
         try:
             check_game(ctx)
-            if get_game(ctx).clue_given or get_game(ctx).check_word(clue):
+            current_game = get_game(ctx)
+            if current_game.clue_given or current_game.check_word(clue):
                 await ctx.message.delete()
             message = get_game(ctx).give_clue(ctx.author, clue, int(number))
             await ctx.send(message)
@@ -102,7 +106,12 @@ class Commands(commands.Cog):
 
     @commands.command()
     async def end_turn(self, ctx):
-        pass
+        try:
+            check_game(ctx)
+            message = get_game(ctx).guess(ctx.author)
+            await ctx.send(message)
+        except ActiveGameError:
+            await ctx.send(f'There is not an active game in the channel! Use {command_prefix}codenames to start a new game.')
 
     @commands.command()
     async def rules(self, ctx):
