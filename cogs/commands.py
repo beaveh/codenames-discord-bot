@@ -102,7 +102,12 @@ class Commands(commands.Cog):
 
     @commands.command()
     async def end_turn(self, ctx):
-        pass
+        try:
+            check_game(ctx)
+            message = get_game(ctx).guess(ctx.author)
+            await ctx.send(message)
+        except ActiveGameError:
+            await ctx.send(f'There is not an active game in the channel! Use {command_prefix}codenames to start a new game.')
 
     @commands.command()
     async def rules(self, ctx):
