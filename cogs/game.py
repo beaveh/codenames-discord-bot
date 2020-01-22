@@ -191,7 +191,25 @@ class Game(object):
             return self.get_board + '\nThe Blue team wins!'
 
     def list_words(self):
-        pass
+        red_list = []
+        blue_list = []
+        black_list = []
+        for word in self.board.words:
+            if word.team == 'Red':
+                red_list.append(word.text)
+            elif word.team == 'Blue':
+                blue_list.append(word.text)
+            elif word.team == 'Assassin':
+                black_list.append(word.text)
+        red_string = ', '.join(red_list)
+        final_red_string = 'Red: ' + red_string
+        blue_string = ', '.join(blue_list)
+        final_blue_string = 'Blue: ' + blue_string
+        black_string = ', '.join(black_list)
+        final_black_string = 'Assasins: ' + black_string
+        return final_red_string + '\n' + final_blue_string + '\n' + final_black_string
+
+
 
     def get_board(self):
         #return str(self.board)
@@ -241,16 +259,43 @@ class Board(object):
         self.words[black].team = 'Assassin'
 
     def __str__(self):
+        count0 = 0
         count = 0
+        row_1_len = 0
+        row_2_len = 0
+        row_3_len = 0
+        row_4_len = 0
+        row_5_len = 0
         string_list = []
+        for word in self.words:
+            count0 += 1
+            if count % 5 == 1:
+                if len(word.text) > row_1_len:
+                    row_1_len = len(word.text)
+            elif count % 5 == 2:
+                if len(word.text) > row_2_len:
+                    row_2_len = len(word.text)
+            elif count % 5 == 3:
+                if len(word.text) > row_3_len:
+                    row_3_len = len(word.text)
+            elif count % 5 == 4:
+                if len(word.text) > row_4_len:
+                    row_4_len = len(word.text)
+            elif count % 5 == 0:
+                if len(word.text) > row_5_len:
+                    row_5_len = len(word.text)
         for word in self.words:
             count += 1
             if count % 5 == 0:
-                string_list.append(word.text + "| \n")
+                string_list.append(word.text + ' '*(row_5_len - len(word.text)) + "| \n")
             elif count % 5 == 1:
-                string_list.append("|" + word.text + "|")
-            else:
-                string_list.append(word.text +"|")
+                string_list.append("|" + word.text + ' '*(row_1_len - len(word.text)) + "|")
+            elif count % 5 == 2:
+                string_list.append("|" + word.text + ' '*(row_2_len - len(word.text)) + "|")
+            elif count % 5 == 3:
+                string_list.append("|" + word.text + ' '*(row_3_len - len(word.text)) + "|")
+            elif count % 5 == 4:
+                string_list.append("|" + word.text + ' '*(row_4_len - len(word.text)) + "|")
         string = "".join(string_list)
         return string
 
