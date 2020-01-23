@@ -51,7 +51,7 @@ client.load_extension(f'cogs.commands')
 async def stop(ctx):
     await client.logout()
 
-client.run('NjM3NDY5NTMwNzgzODc1MDky.Xikebg.0rTeAtMWj5HNglUTN1D_yvHjC3w')
+client.run('NjM3NDY5NTMwNzgzODc1MDky.Xikfvg.F0CLM_adpZmQRU-CNCc6z69dJyo')
 # client = discord.Client()
 #
 # @client.event
