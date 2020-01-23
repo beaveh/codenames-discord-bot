@@ -61,7 +61,7 @@ class Game(object):
         else:
             self.started = True
             self.turn = self.board.starting_team
-            return f'{self.get_board()} \n{self.turn} team goes first.'
+            return f'{self.get_board()} \n{emojis[self.turn]} {self.turn} team goes first.'
 
     def make_spymaster(self, player):
         team = self.players.get(player)
@@ -99,7 +99,7 @@ class Game(object):
                 else:
                     self.guesses_left = num + 1
                 self.red_clues.append(f'{clue}: {num}')
-                return f'The clue is {clue}: {num}'
+                return f'The clue is "{clue}": {num}'
         elif self.turn == 'Blue':
             if self.blue_spymaster != player:
                 return f'Only the {emojis["Blue"]} Blue Spymaster ({self.blue_spymaster}) may give a clue at this time.'
@@ -157,7 +157,7 @@ class Game(object):
             current_team = self.turn
             self.turn = self.other(self.turn)
             self.clue_given = False
-            return f"The {current_team} has ended their turn. It is now the {self.turn} team's turn."
+            return f"The {emojis[current_team]} {current_team} has ended their turn. It is now the {emojis[self.turn]} {self.turn} team's turn."
 
     """Returns the opposing team"""
     def other(self, team):
@@ -168,8 +168,8 @@ class Game(object):
 
     """Returns whether a given word is one of the words (unrevealed) on the board"""
     def check_word(self, word):
-        words = [word.text for word in self.board.words]
-        return word in words
+        words = [word.text.lower() for word in self.board.words]
+        return word.lower() in words
 
     def check_winner(self, winner=None):
         if winner:
@@ -184,10 +184,10 @@ class Game(object):
                     blues -= 1
         if reds == 0:
             Game.active_games.pop(self.channel, None)
-            return self.get_board + f'\nThe {emojis["Red"]} Red team wins!'
+            return self.get_board() + f'\nThe {emojis["Red"]} Red team wins!'
         elif blues == 0:
             Game.active_games.pop(self.channel, None)
-            return self.get_board + f'\nThe {emojis["Blue"]} Blue team wins!'
+            return self.get_board() + f'\nThe {emojis["Blue"]} Blue team wins!'
 
     def list_words(self):
         red_list = []
