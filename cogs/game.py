@@ -266,19 +266,19 @@ class Board(object):
         string_list = []
         for word in self.words:
             count0 += 1
-            if count % 5 == 1:
+            if count0 % 5 == 1:
                 if len(word.text) > row_1_len:
                     row_1_len = len(word.text)
-            elif count % 5 == 2:
+            elif count0 % 5 == 2:
                 if len(word.text) > row_2_len:
                     row_2_len = len(word.text)
-            elif count % 5 == 3:
+            elif count0 % 5 == 3:
                 if len(word.text) > row_3_len:
                     row_3_len = len(word.text)
-            elif count % 5 == 4:
+            elif count0 % 5 == 4:
                 if len(word.text) > row_4_len:
                     row_4_len = len(word.text)
-            elif count % 5 == 0:
+            elif count0 % 5 == 0:
                 if len(word.text) > row_5_len:
                     row_5_len = len(word.text)
         for word in self.words:
