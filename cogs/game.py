@@ -261,7 +261,7 @@ class Board(object):
         for word in self.words:
             count += 1
             if count % 5 == 0:
-                string_list.append(word.text + " | \n")
+                string_list.append(word.text + " | \n \n")
             elif count % 5 == 1:
                 string_list.append("| " + word.text + " | ")
             else:
