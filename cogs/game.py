@@ -213,7 +213,7 @@ class Game(object):
         return str(self.board)
 
     def get_status(self):
-        return f'{self.get_board()} \n\
+        return f'{self.get_board()}
                 Red Spymaster: {self.red_spymaster} \n\
                 Blue Spymaster: {self.blue_spymaster} \n\
                 Red Clues: {self.red_clues} \n\
