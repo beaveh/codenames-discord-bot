@@ -52,7 +52,7 @@ class Commands(commands.Cog):
             await ctx.send(f'The game has been configured. Use {command_prefix}join [Red/Blue] to join a team.')
 
     @commands.command()
-    async def join(self, ctx, team): #team may need to be casted to str
+    async def join(self, ctx, team):
         try:
             check_game(ctx)
             message = get_game(ctx).add(ctx.author, team)
@@ -70,7 +70,7 @@ class Commands(commands.Cog):
             await ctx.send(f'There is not an active game in the channel! Use {command_prefix}codenames to start a new game.')
 
     @commands.command()
-    async def start(self, ctx): # need to send words to spymasters
+    async def start(self, ctx):
         try:
             check_game(ctx)
             current_game = get_game(ctx)
