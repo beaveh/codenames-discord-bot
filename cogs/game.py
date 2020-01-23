@@ -290,11 +290,11 @@ class Board(object):
             elif count % 5 == 1:
                 string_list.append("|" + word.text + ' '*(row_1_len - len(word.text)) + "|")
             elif count % 5 == 2:
-                string_list.append("|" + word.text + ' '*(row_2_len - len(word.text)) + "|")
+                string_list.append(word.text + ' '*(row_2_len - len(word.text)) + "|")
             elif count % 5 == 3:
-                string_list.append("|" + word.text + ' '*(row_3_len - len(word.text)) + "|")
+                string_list.append(word.text + ' '*(row_3_len - len(word.text)) + "|")
             elif count % 5 == 4:
-                string_list.append("|" + word.text + ' '*(row_4_len - len(word.text)) + "|")
+                string_list.append(word.text + ' '*(row_4_len - len(word.text)) + "|")
         string = "".join(string_list)
         return string
 
