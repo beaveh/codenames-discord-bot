@@ -54,9 +54,9 @@ class Game(object):
         # elif teams['Red'] < 2 or teams['Blue'] < 2:
         #     return 'There are not enough players to start a game!'
         # elif not self.red_spymaster:
-        #     return f'Please select a Spymaster for the {emojis['Red']}Red team.'
+        #     return f'Please select a Spymaster for the {emojis["Red"]}Red team.'
         # elif not self.blue_spymaster:
-        #     return f'Please select a Spymaster for the {emojis['Blue']}Blue team.'
+        #     return f'Please select a Spymaster for the {emojis["Blue"]}Blue team.'
         elif self.started:
             return 'The game has already started!'
         else:
@@ -208,8 +208,6 @@ class Game(object):
         black_string = ', '.join(black_list)
         final_black_string = 'Assasins: ' + black_string
         return final_red_string + '\n' + final_blue_string + '\n' + final_black_string
-
-
 
     def get_board(self):
         return str(self.board)
