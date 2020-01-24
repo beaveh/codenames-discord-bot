@@ -76,8 +76,9 @@ class Commands(commands.Cog):
             current_game = get_game(ctx)
             message = current_game.start(ctx.author)
             await ctx.send(message)
-            await current_game.red_spymaster.send(current_game.list_words())
-            await current_game.blue_spymaster.send(current_game.list_words())
+            if current_game.started:
+                await current_game.red_spymaster.send(current_game.list_words())
+                await current_game.blue_spymaster.send(current_game.list_words())
         except ActiveGameError:
             await ctx.send(f'There is not an active game in the channel! Use {command_prefix}codenames to start a new game.')
 
