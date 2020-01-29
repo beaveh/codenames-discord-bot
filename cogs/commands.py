@@ -17,14 +17,6 @@ class Commands(commands.Cog):
 
     #Commands
     @commands.command()
-    async def ping(self, ctx):
-        await ctx.send('pong')
-
-    @commands.command()
-    async def pong(self, ctx):
-        await ctx.send(':blue_circle: \n bye :wave:')
-
-    @commands.command()
     async def kick(self, ctx, member : discord.Member, *, reason=None):
         await member.kick(reason=reason)
 
