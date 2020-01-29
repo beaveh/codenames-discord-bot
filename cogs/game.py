@@ -205,8 +205,8 @@ class Game(object):
         blue_string = ', '.join(blue_list)
         final_blue_string = 'Blue: ' + blue_string
         black_string = ', '.join(black_list)
-        final_black_string = 'Assasins: ' + black_string
-        return final_red_string + '\n' + final_blue_string + '\n' + final_black_string
+        final_black_string = 'Assassin: ' + black_string
+        return '\n'+ final_red_string + '\n' + final_blue_string + '\n' + final_black_string
 
     def get_board(self):
         return str(self.board)

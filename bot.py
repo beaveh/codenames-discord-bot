@@ -15,9 +15,9 @@ async def on_member_join(member):
 async def on_member_remove(member):
     print(f'{member} has left a server')
 
-# @client.command()
-# async def ping(ctx):
-#     await ctx.send(f'Pong! {round(client.latency * 1000)} ms')
+@client.command()
+async def ping(ctx):
+    await ctx.send(f'Pong! {round(client.latency * 1000)} ms')
 
 @client.command(aliases=['8ball', 'test'])
 async def _8ball(ctx, *, question): # *, question allows us to take several arguments as just 1
@@ -46,23 +46,9 @@ client.load_extension(f'cogs.commands')
 #     if filename.endswith('.py'):
 #         client.load_extension(f'cogs.{filename[:-3]}')
 
-#temporary command to kill the bot
+#Command to kill the bot
 @client.command()
 async def stop(ctx):
     await client.logout()
 
-client.run('NjM3NDY5NTMwNzgzODc1MDky.Xik76Q.PgwLYc2BkOc00loTGU-Tzy5xeN0')
-# client = discord.Client()
-#
-# @client.event
-# async def on_ready():
-#     print('We have logged in as {0.user}'.format(client))
-#
-# @client.event
-# async def on_message(message):
-#     if message.author == client.user:
-#         return
-#     if message.content.startswith('$hello'):
-#         await message.channel.send('Hello!')
-#
-# client.run('NjM3NDY5NTMwNzgzODc1MDky.XbOqTA.hDTgayoDbr6aTx8Ei1TLBjK9USE')
+client.run(#insert bot token here)
